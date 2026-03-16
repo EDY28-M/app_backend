@@ -213,8 +213,16 @@ export class AuthService {
           to: dto.target,
         });
         this.logger.log(`SMS enviado a ${dto.target} via Twilio`);
-      } catch (error) {
-        this.logger.error(`Error enviando SMS via Twilio: ${error.message}`);
+      } catch (error: any) {
+        this.logger.error(`Error enviando SMS via Twilio: ${error?.message}`);
+        // Twilio Trial: solo envía a números verificados (códigos 21608, 21614)
+        const code = error?.code ?? error?.status;
+        if (code === 21608 || code === 21614 || error?.message?.includes('verified')) {
+          throw new BadRequestException(
+            'Cuenta Twilio Trial: solo puedes enviar SMS a números verificados. ' +
+              'Añade el número en https://console.twilio.com o usa OTP_PROVIDER=local para pruebas.',
+          );
+        }
         throw new BadRequestException(
           'No se pudo enviar el SMS. Verifica el numero de telefono.',
         );

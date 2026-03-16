@@ -5,6 +5,8 @@ export declare class AddressesController {
     constructor(addressesService: AddressesService);
     create(userId: string, dto: CreateAddressDto): Promise<{
         id: string;
+        created_at: Date;
+        updated_at: Date;
         user_id: string | null;
         label: string | null;
         contact_name: string | null;
@@ -20,11 +22,11 @@ export declare class AddressesController {
         latitude: import("@prisma/client-runtime-utils").Decimal;
         longitude: import("@prisma/client-runtime-utils").Decimal;
         is_default: boolean;
-        created_at: Date;
-        updated_at: Date;
     }>;
     findAll(userId: string): Promise<{
         id: string;
+        created_at: Date;
+        updated_at: Date;
         user_id: string | null;
         label: string | null;
         contact_name: string | null;
@@ -40,11 +42,11 @@ export declare class AddressesController {
         latitude: import("@prisma/client-runtime-utils").Decimal;
         longitude: import("@prisma/client-runtime-utils").Decimal;
         is_default: boolean;
-        created_at: Date;
-        updated_at: Date;
     }[]>;
     update(userId: string, id: string, dto: UpdateAddressDto): Promise<{
         id: string;
+        created_at: Date;
+        updated_at: Date;
         user_id: string | null;
         label: string | null;
         contact_name: string | null;
@@ -60,14 +62,14 @@ export declare class AddressesController {
         latitude: import("@prisma/client-runtime-utils").Decimal;
         longitude: import("@prisma/client-runtime-utils").Decimal;
         is_default: boolean;
-        created_at: Date;
-        updated_at: Date;
     }>;
     remove(userId: string, id: string): Promise<{
         message: string;
     }>;
     setDefault(userId: string, id: string): Promise<{
         id: string;
+        created_at: Date;
+        updated_at: Date;
         user_id: string | null;
         label: string | null;
         contact_name: string | null;
@@ -83,7 +85,5 @@ export declare class AddressesController {
         latitude: import("@prisma/client-runtime-utils").Decimal;
         longitude: import("@prisma/client-runtime-utils").Decimal;
         is_default: boolean;
-        created_at: Date;
-        updated_at: Date;
     }>;
 }

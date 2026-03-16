@@ -3,11 +3,11 @@ export declare class StoresController {
     private readonly storesService;
     constructor(storesService: StoresService);
     getCategories(): Promise<{
+        code: string;
         id: string;
         created_at: Date;
-        is_active: boolean;
-        code: string;
         name: string;
+        is_active: boolean;
     }[]>;
     findPopular(category?: string): Promise<{
         id: string;
@@ -27,6 +27,17 @@ export declare class StoresController {
         branch_id: string;
         image_url: string | null;
     }[]>;
+    getOffers(limit?: string): Promise<{
+        id: string;
+        name: string;
+        image_url: string | null;
+        description: string | null;
+        base_price_amount: number;
+        offer_price_amount: number | null;
+        store_id: string;
+        store_name: string;
+        branch_id: string;
+    }[]>;
     getCatalog(storeId: string, branchId: string): Promise<{
         id: string;
         branch_catalog_item_id: string;
@@ -35,10 +46,35 @@ export declare class StoresController {
         description: string | null;
         item_type: import("@prisma/client").$Enums.item_type_enum;
         price: number;
+        is_on_offer: boolean;
+        offer_price_amount: number | null;
         variant: {
             id: string;
             name: string;
         } | null;
+    }[] | {
+        id: string;
+        branch_catalog_item_id: null;
+        name: string;
+        image_url: string | null;
+        description: string | null;
+        item_type: import("@prisma/client").$Enums.item_type_enum;
+        price: number;
+        is_on_offer: boolean;
+        offer_price_amount: number | null;
+        variant: null;
+    }[]>;
+    getcategoryProducts(categoryCode: string, limit?: string): Promise<{
+        id: string;
+        name: string;
+        image_url: string | null;
+        description: string | null;
+        base_price_amount: number;
+        offer_price_amount: number | null;
+        is_on_offer: boolean;
+        store_id: string;
+        store_name: string;
+        branch_id: string;
     }[]>;
     findOne(slug: string): Promise<{
         avg_rating: number | null;
@@ -50,6 +86,8 @@ export declare class StoresController {
         store_branches: ({
             addresses: {
                 id: string;
+                created_at: Date;
+                updated_at: Date;
                 user_id: string | null;
                 label: string | null;
                 contact_name: string | null;
@@ -65,33 +103,31 @@ export declare class StoresController {
                 latitude: import("@prisma/client-runtime-utils").Decimal;
                 longitude: import("@prisma/client-runtime-utils").Decimal;
                 is_default: boolean;
-                created_at: Date;
-                updated_at: Date;
             };
         } & {
+            phone_e164: string | null;
             id: string;
+            status: import("@prisma/client").$Enums.branch_status_type;
             created_at: Date;
             updated_at: Date;
             name: string;
             store_id: string;
-            status: import("@prisma/client").$Enums.branch_status_type;
-            phone_e164: string | null;
             address_id: string;
             manager_user_id: string | null;
             accepts_orders: boolean;
             avg_prep_time_minutes: number;
             max_concurrent_orders: number | null;
         })[];
+        description: string | null;
         id: string;
+        status: import("@prisma/client").$Enums.store_status_type;
         created_at: Date;
         updated_at: Date;
         name: string;
-        status: import("@prisma/client").$Enums.store_status_type;
-        slug: string;
-        description: string | null;
-        logo_url: string | null;
         merchant_id: string;
         business_category_id: string;
+        slug: string;
+        logo_url: string | null;
         cover_image_url: string | null;
         service_mode: import("@prisma/client").$Enums.service_mode_type;
         catalog_mode: import("@prisma/client").$Enums.catalog_mode_type;

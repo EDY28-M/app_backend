@@ -28,8 +28,15 @@ let StoresController = class StoresController {
     findPopular(category) {
         return this.storesService.findPopular(category);
     }
+    getOffers(limit) {
+        return this.storesService.getOffers(limit ? parseInt(limit, 10) : 30);
+    }
     getCatalog(storeId, branchId) {
         return this.storesService.getCatalogItems(storeId, branchId);
+    }
+    getcategoryProducts(categoryCode, limit) {
+        const lim = limit ? parseInt(limit, 10) : 20;
+        return this.storesService.getProductsByCategory(categoryCode, lim);
     }
     findOne(slug) {
         return this.storesService.findOne(slug);
@@ -55,6 +62,15 @@ __decorate([
 ], StoresController.prototype, "findPopular", null);
 __decorate([
     (0, decorators_1.Public)(),
+    (0, common_1.Get)('offers'),
+    (0, swagger_1.ApiOperation)({ summary: 'Productos en oferta' }),
+    __param(0, (0, common_1.Query)('limit')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], StoresController.prototype, "getOffers", null);
+__decorate([
+    (0, decorators_1.Public)(),
     (0, common_1.Get)('catalog'),
     (0, swagger_1.ApiOperation)({ summary: 'Obtener catálogo de sucursal' }),
     __param(0, (0, common_1.Query)('store_id')),
@@ -63,6 +79,16 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], StoresController.prototype, "getCatalog", null);
+__decorate([
+    (0, decorators_1.Public)(),
+    (0, common_1.Get)('products/by-category/:categoryCode'),
+    (0, swagger_1.ApiOperation)({ summary: 'Obtener productos por categoría' }),
+    __param(0, (0, common_1.Param)('categoryCode')),
+    __param(1, (0, common_1.Query)('limit')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], StoresController.prototype, "getcategoryProducts", null);
 __decorate([
     (0, decorators_1.Public)(),
     (0, common_1.Get)('by-slug/:slug'),

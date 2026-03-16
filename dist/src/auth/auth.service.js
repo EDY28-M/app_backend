@@ -217,7 +217,12 @@ let AuthService = AuthService_1 = class AuthService {
                 this.logger.log(`SMS enviado a ${dto.target} via Twilio`);
             }
             catch (error) {
-                this.logger.error(`Error enviando SMS via Twilio: ${error.message}`);
+                this.logger.error(`Error enviando SMS via Twilio: ${error?.message}`);
+                const code = error?.code ?? error?.status;
+                if (code === 21608 || code === 21614 || error?.message?.includes('verified')) {
+                    throw new common_1.BadRequestException('Cuenta Twilio Trial: solo puedes enviar SMS a números verificados. ' +
+                        'Añade el número en https://console.twilio.com o usa OTP_PROVIDER=local para pruebas.');
+                }
                 throw new common_1.BadRequestException('No se pudo enviar el SMS. Verifica el numero de telefono.');
             }
         }

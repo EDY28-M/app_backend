@@ -13,25 +13,25 @@ export declare class UsersService {
         }[];
         user_roles: undefined;
         email: string | null;
-        id: string;
-        created_at: Date;
-        status: import("@prisma/client").$Enums.user_status_type;
-        phone_e164: string | null;
-        auth_provider: import("@prisma/client").$Enums.auth_provider_type;
         first_name: string;
         last_name: string | null;
+        auth_provider: import("@prisma/client").$Enums.auth_provider_type;
+        phone_e164: string | null;
+        id: string;
         photo_url: string | null;
+        status: import("@prisma/client").$Enums.user_status_type;
         is_phone_verified: boolean;
         is_email_verified: boolean;
+        created_at: Date;
     }>;
     updateMe(userId: string, dto: UpdateUserDto): Promise<{
         email: string | null;
-        id: string;
-        status: import("@prisma/client").$Enums.user_status_type;
-        phone_e164: string | null;
         first_name: string;
         last_name: string | null;
+        phone_e164: string | null;
+        id: string;
         photo_url: string | null;
+        status: import("@prisma/client").$Enums.user_status_type;
     }>;
     findOne(userId: string): Promise<{
         roles: {
@@ -42,27 +42,27 @@ export declare class UsersService {
         }[];
         user_roles: undefined;
         email: string | null;
-        id: string;
-        created_at: Date;
-        status: import("@prisma/client").$Enums.user_status_type;
-        phone_e164: string | null;
-        auth_provider: import("@prisma/client").$Enums.auth_provider_type;
         first_name: string;
         last_name: string | null;
+        auth_provider: import("@prisma/client").$Enums.auth_provider_type;
+        phone_e164: string | null;
+        id: string;
         photo_url: string | null;
+        status: import("@prisma/client").$Enums.user_status_type;
         is_phone_verified: boolean;
         is_email_verified: boolean;
+        created_at: Date;
     }>;
     findAll(pagination: PaginationDto): Promise<{
         data: {
             email: string | null;
-            id: string;
-            created_at: Date;
-            status: import("@prisma/client").$Enums.user_status_type;
-            phone_e164: string | null;
-            auth_provider: import("@prisma/client").$Enums.auth_provider_type;
             first_name: string;
             last_name: string | null;
+            auth_provider: import("@prisma/client").$Enums.auth_provider_type;
+            phone_e164: string | null;
+            id: string;
+            status: import("@prisma/client").$Enums.user_status_type;
+            created_at: Date;
         }[];
         meta: {
             total: number;

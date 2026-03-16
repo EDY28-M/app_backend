@@ -17,6 +17,7 @@ const addresses_module_1 = require("./addresses/addresses.module");
 const stores_module_1 = require("./stores/stores.module");
 const carts_module_1 = require("./carts/carts.module");
 const orders_module_1 = require("./orders/orders.module");
+const favorites_module_1 = require("./favorites/favorites.module");
 const jwt_auth_guard_1 = require("./common/guards/jwt-auth.guard");
 let AppModule = class AppModule {
 };
@@ -32,6 +33,7 @@ exports.AppModule = AppModule = __decorate([
             stores_module_1.StoresModule,
             carts_module_1.CartsModule,
             orders_module_1.OrdersModule,
+            favorites_module_1.FavoritesModule,
         ],
         providers: [
             {

@@ -8,6 +8,7 @@ import { AddressesModule } from './addresses/addresses.module';
 import { StoresModule } from './stores/stores.module';
 import { CartsModule } from './carts/carts.module';
 import { OrdersModule } from './orders/orders.module';
+import { FavoritesModule } from './favorites/favorites.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 
 @Module({
@@ -20,6 +21,7 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
     StoresModule,
     CartsModule,
     OrdersModule,
+    FavoritesModule,
   ],
   providers: [
     {

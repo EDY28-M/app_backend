@@ -5,6 +5,8 @@ export declare class AddressesService {
     constructor(prisma: PrismaService);
     create(userId: string, dto: CreateAddressDto): Promise<{
         id: string;
+        created_at: Date;
+        updated_at: Date;
         user_id: string | null;
         label: string | null;
         contact_name: string | null;
@@ -20,11 +22,11 @@ export declare class AddressesService {
         latitude: import("@prisma/client-runtime-utils").Decimal;
         longitude: import("@prisma/client-runtime-utils").Decimal;
         is_default: boolean;
-        created_at: Date;
-        updated_at: Date;
     }>;
     findAllByUser(userId: string): Promise<{
         id: string;
+        created_at: Date;
+        updated_at: Date;
         user_id: string | null;
         label: string | null;
         contact_name: string | null;
@@ -40,11 +42,11 @@ export declare class AddressesService {
         latitude: import("@prisma/client-runtime-utils").Decimal;
         longitude: import("@prisma/client-runtime-utils").Decimal;
         is_default: boolean;
-        created_at: Date;
-        updated_at: Date;
     }[]>;
     update(userId: string, addressId: string, dto: UpdateAddressDto): Promise<{
         id: string;
+        created_at: Date;
+        updated_at: Date;
         user_id: string | null;
         label: string | null;
         contact_name: string | null;
@@ -60,14 +62,14 @@ export declare class AddressesService {
         latitude: import("@prisma/client-runtime-utils").Decimal;
         longitude: import("@prisma/client-runtime-utils").Decimal;
         is_default: boolean;
-        created_at: Date;
-        updated_at: Date;
     }>;
     remove(userId: string, addressId: string): Promise<{
         message: string;
     }>;
     setDefault(userId: string, addressId: string): Promise<{
         id: string;
+        created_at: Date;
+        updated_at: Date;
         user_id: string | null;
         label: string | null;
         contact_name: string | null;
@@ -83,8 +85,6 @@ export declare class AddressesService {
         latitude: import("@prisma/client-runtime-utils").Decimal;
         longitude: import("@prisma/client-runtime-utils").Decimal;
         is_default: boolean;
-        created_at: Date;
-        updated_at: Date;
     }>;
     private findAndVerifyOwnership;
 }

@@ -23,6 +23,13 @@ export class StoresController {
   }
 
   @Public()
+  @Get('offers')
+  @ApiOperation({ summary: 'Productos en oferta' })
+  getOffers(@Query('limit') limit?: string) {
+    return this.storesService.getOffers(limit ? parseInt(limit, 10) : 30);
+  }
+
+  @Public()
   @Get('catalog')
   @ApiOperation({ summary: 'Obtener catálogo de sucursal' })
   getCatalog(
@@ -30,6 +37,17 @@ export class StoresController {
     @Query('branch_id') branchId: string,
   ) {
     return this.storesService.getCatalogItems(storeId, branchId);
+  }
+
+  @Public()
+  @Get('products/by-category/:categoryCode')
+  @ApiOperation({ summary: 'Obtener productos por categoría' })
+  getcategoryProducts(
+    @Param('categoryCode') categoryCode: string,
+    @Query('limit') limit?: string,
+  ) {
+    const lim = limit ? parseInt(limit, 10) : 20;
+    return this.storesService.getProductsByCategory(categoryCode, lim);
   }
 
   @Public()
