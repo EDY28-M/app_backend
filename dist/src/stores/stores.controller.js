@@ -28,6 +28,9 @@ let StoresController = class StoresController {
     findPopular(category) {
         return this.storesService.findPopular(category);
     }
+    findPopularProducts(limit) {
+        return this.storesService.findPopularProducts(limit ? parseInt(limit, 10) : 20);
+    }
     getOffers(limit) {
         return this.storesService.getOffers(limit ? parseInt(limit, 10) : 30);
     }
@@ -40,6 +43,9 @@ let StoresController = class StoresController {
     }
     findOne(slug) {
         return this.storesService.findOne(slug);
+    }
+    getStoreProductCategories(id) {
+        return this.storesService.getStoreProductCategories(id);
     }
 };
 exports.StoresController = StoresController;
@@ -60,6 +66,15 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], StoresController.prototype, "findPopular", null);
+__decorate([
+    (0, decorators_1.Public)(),
+    (0, common_1.Get)('popular-products'),
+    (0, swagger_1.ApiOperation)({ summary: 'Productos populares' }),
+    __param(0, (0, common_1.Query)('limit')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], StoresController.prototype, "findPopularProducts", null);
 __decorate([
     (0, decorators_1.Public)(),
     (0, common_1.Get)('offers'),
@@ -98,6 +113,15 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], StoresController.prototype, "findOne", null);
+__decorate([
+    (0, decorators_1.Public)(),
+    (0, common_1.Get)(':id/product-categories'),
+    (0, swagger_1.ApiOperation)({ summary: 'Obtener categorías de productos de una tienda' }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], StoresController.prototype, "getStoreProductCategories", null);
 exports.StoresController = StoresController = __decorate([
     (0, swagger_1.ApiTags)('Stores'),
     (0, common_1.Controller)('stores'),

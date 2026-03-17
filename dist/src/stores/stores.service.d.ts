@@ -20,6 +20,19 @@ export declare class StoresService {
         branch_id: string;
         image_url: string | null;
     }[]>;
+    findPopularProducts(limit?: number): Promise<{
+        id: string;
+        name: string;
+        image_url: string | null;
+        description: string | null;
+        base_price_amount: number;
+        offer_price_amount: number | null;
+        is_on_offer: boolean;
+        store_id: string;
+        store_name: string;
+        branch_id: string;
+        branch_catalog_item_id: string;
+    }[]>;
     findOne(slug: string): Promise<{
         avg_rating: number | null;
         min_order_amount: number | null;
@@ -95,6 +108,7 @@ export declare class StoresService {
         store_id: string;
         store_name: string;
         branch_id: string;
+        branch_catalog_item_id: string;
     }[]>;
     getOffers(limit?: number): Promise<{
         id: string;
@@ -103,9 +117,12 @@ export declare class StoresService {
         description: string | null;
         base_price_amount: number;
         offer_price_amount: number | null;
+        is_on_offer: boolean;
         store_id: string;
         store_name: string;
+        category_name: string;
         branch_id: string;
+        branch_catalog_item_id: string;
     }[]>;
     getCatalogItems(storeId: string, branchId: string): Promise<{
         id: string;
@@ -132,5 +149,15 @@ export declare class StoresService {
         is_on_offer: boolean;
         offer_price_amount: number | null;
         variant: null;
+    }[]>;
+    getStoreProductCategories(storeId: string): Promise<{
+        id: string;
+        created_at: Date;
+        name: string;
+        slug: string;
+        is_active: boolean;
+        store_id: string;
+        sort_order: number;
+        parent_id: string | null;
     }[]>;
 }

@@ -27,6 +27,19 @@ export declare class StoresController {
         branch_id: string;
         image_url: string | null;
     }[]>;
+    findPopularProducts(limit?: string): Promise<{
+        id: string;
+        name: string;
+        image_url: string | null;
+        description: string | null;
+        base_price_amount: number;
+        offer_price_amount: number | null;
+        is_on_offer: boolean;
+        store_id: string;
+        store_name: string;
+        branch_id: string;
+        branch_catalog_item_id: string;
+    }[]>;
     getOffers(limit?: string): Promise<{
         id: string;
         name: string;
@@ -34,9 +47,12 @@ export declare class StoresController {
         description: string | null;
         base_price_amount: number;
         offer_price_amount: number | null;
+        is_on_offer: boolean;
         store_id: string;
         store_name: string;
+        category_name: string;
         branch_id: string;
+        branch_catalog_item_id: string;
     }[]>;
     getCatalog(storeId: string, branchId: string): Promise<{
         id: string;
@@ -75,6 +91,7 @@ export declare class StoresController {
         store_id: string;
         store_name: string;
         branch_id: string;
+        branch_catalog_item_id: string;
     }[]>;
     findOne(slug: string): Promise<{
         avg_rating: number | null;
@@ -133,4 +150,14 @@ export declare class StoresController {
         catalog_mode: import("@prisma/client").$Enums.catalog_mode_type;
         total_reviews: number;
     }>;
+    getStoreProductCategories(id: string): Promise<{
+        id: string;
+        created_at: Date;
+        name: string;
+        slug: string;
+        is_active: boolean;
+        store_id: string;
+        sort_order: number;
+        parent_id: string | null;
+    }[]>;
 }

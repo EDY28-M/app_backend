@@ -95,6 +95,9 @@ export declare class CartsController {
         subtotal: number;
         total: number;
         store_name: null;
+        store_id: null;
+        branch_id: null;
+        item_count: number;
     }>;
     removeItem(userId: string, itemId: string): Promise<{
         id: string;
@@ -122,5 +125,8 @@ export declare class CartsController {
         subtotal: number;
         total: number;
         store_name: null;
+        store_id: null;
+        branch_id: null;
+        item_count: number;
     }>;
 }

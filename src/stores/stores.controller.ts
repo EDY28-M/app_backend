@@ -23,6 +23,13 @@ export class StoresController {
   }
 
   @Public()
+  @Get('popular-products')
+  @ApiOperation({ summary: 'Productos populares' })
+  findPopularProducts(@Query('limit') limit?: string) {
+    return this.storesService.findPopularProducts(limit ? parseInt(limit, 10) : 20);
+  }
+
+  @Public()
   @Get('offers')
   @ApiOperation({ summary: 'Productos en oferta' })
   getOffers(@Query('limit') limit?: string) {
@@ -55,5 +62,12 @@ export class StoresController {
   @ApiOperation({ summary: 'Obtener tienda por slug' })
   findOne(@Param('slug') slug: string) {
     return this.storesService.findOne(slug);
+  }
+
+  @Public()
+  @Get(':id/product-categories')
+  @ApiOperation({ summary: 'Obtener categorías de productos de una tienda' })
+  getStoreProductCategories(@Param('id') id: string) {
+    return this.storesService.getStoreProductCategories(id);
   }
 }

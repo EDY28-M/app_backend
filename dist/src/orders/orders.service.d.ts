@@ -3,6 +3,7 @@ import { CreateOrderDto } from './dto';
 export declare class OrdersService {
     private prisma;
     constructor(prisma: PrismaService);
+    private _toEffectivePrice;
     create(userId: string, dto: CreateOrderDto): Promise<{
         id: string;
         order_code: string;

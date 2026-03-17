@@ -73,6 +73,9 @@ export declare class CartsService {
         subtotal: number;
         total: number;
         store_name: null;
+        store_id: null;
+        branch_id: null;
+        item_count: number;
     }>;
     removeItem(userId: string, itemId: string): Promise<{
         id: string;
@@ -100,6 +103,9 @@ export declare class CartsService {
         subtotal: number;
         total: number;
         store_name: null;
+        store_id: null;
+        branch_id: null;
+        item_count: number;
     }>;
     getMyCarts(userId: string): Promise<{
         id: string;
@@ -123,5 +129,9 @@ export declare class CartsService {
         total: number;
         item_count: number;
     }[]>;
+    private _toEffectivePrice;
+    private _syncCartPricesByCartId;
+    private _syncCartPricesByUser;
+    private _syncCartItemPrices;
     private _formatCart;
 }

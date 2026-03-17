@@ -17,6 +17,16 @@ let OrdersService = class OrdersService {
     constructor(prisma) {
         this.prisma = prisma;
     }
+    _toEffectivePrice(input) {
+        const base = Number(input.basePrice);
+        const offer = input.offerPrice !== null && input.offerPrice !== undefined
+            ? Number(input.offerPrice)
+            : null;
+        if (input.isOnOffer && offer !== null && offer > 0) {
+            return offer;
+        }
+        return base;
+    }
     async create(userId, dto) {
         const cart = await this.prisma.carts.findFirst({
             where: {
@@ -51,9 +61,31 @@ let OrdersService = class OrdersService {
         const customerName = [user.first_name, user.last_name].filter(Boolean).join(' ');
         const customerPhone = user.phone_e164 ?? user.email ?? '';
         const orderCode = `FG-${Date.now().toString(36).toUpperCase()}`;
-        const subtotal = cart.cart_items.reduce((s, ci) => {
-            const p = Number(ci.unit_price_amount);
-            return s + p * ci.qty;
+        const repricedItems = cart.cart_items.map((ci) => {
+            const effective = this._toEffectivePrice({
+                basePrice: ci.branch_catalog_items.price_amount,
+                isOnOffer: ci.catalog_items.is_on_offer,
+                offerPrice: ci.catalog_items.offer_price_amount,
+            });
+            return {
+                ...ci,
+                effective_unit_price: effective,
+            };
+        });
+        const priceUpdates = [];
+        for (const ci of repricedItems) {
+            if (Number(ci.unit_price_amount) === ci.effective_unit_price)
+                continue;
+            priceUpdates.push(this.prisma.cart_items.update({
+                where: { id: ci.id },
+                data: { unit_price_amount: ci.effective_unit_price },
+            }));
+        }
+        if (priceUpdates.length > 0) {
+            await this.prisma.$transaction(priceUpdates);
+        }
+        const subtotal = repricedItems.reduce((s, ci) => {
+            return s + ci.effective_unit_price * ci.qty;
         }, 0);
         const [order] = await this.prisma.$transaction([
             this.prisma.orders.create({
@@ -86,8 +118,8 @@ let OrdersService = class OrdersService {
                 data: { status: 'converted' },
             }),
         ]);
-        for (const ci of cart.cart_items) {
-            const lineTotal = Number(ci.unit_price_amount) * ci.qty;
+        for (const ci of repricedItems) {
+            const lineTotal = ci.effective_unit_price * ci.qty;
             await this.prisma.order_items.create({
                 data: {
                     order_id: order.id,
@@ -98,7 +130,7 @@ let OrdersService = class OrdersService {
                     item_name_snapshot: ci.catalog_items.name,
                     variant_name_snapshot: ci.catalog_item_variants?.name,
                     sku_snapshot: ci.catalog_items.sku,
-                    base_unit_price_amount: ci.unit_price_amount,
+                    base_unit_price_amount: ci.effective_unit_price,
                     modifier_unit_total_amount: 0,
                     qty: ci.qty,
                     line_total_amount: lineTotal,

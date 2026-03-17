@@ -74,6 +74,48 @@ let StoresService = class StoresService {
                 null,
         }));
     }
+    async findPopularProducts(limit = 20) {
+        const items = await this.prisma.catalog_items.findMany({
+            where: {
+                is_active: true,
+                stores: {
+                    status: 'active',
+                    store_branches: {
+                        some: { status: 'active', accepts_orders: true },
+                    },
+                },
+            },
+            include: {
+                branch_catalog_items: {
+                    take: 1,
+                },
+                stores: {
+                    include: {
+                        store_branches: {
+                            where: { status: 'active', accepts_orders: true },
+                            take: 1,
+                            select: { id: true },
+                        },
+                    },
+                },
+            },
+            take: limit,
+            orderBy: { created_at: 'desc' },
+        });
+        return items.map((i) => ({
+            id: i.id,
+            name: i.name,
+            image_url: i.image_url,
+            description: i.description,
+            base_price_amount: Number(i.base_price_amount),
+            offer_price_amount: i.offer_price_amount ? Number(i.offer_price_amount) : null,
+            is_on_offer: i.is_on_offer,
+            store_id: i.store_id,
+            store_name: i.stores.name,
+            branch_id: i.stores.store_branches[0]?.id ?? null,
+            branch_catalog_item_id: i.branch_catalog_items[0]?.id ?? null,
+        }));
+    }
     async findOne(slug) {
         const store = await this.prisma.stores.findUnique({
             where: { slug, status: 'active' },
@@ -116,6 +158,9 @@ let StoresService = class StoresService {
                 },
             },
             include: {
+                branch_catalog_items: {
+                    take: 1,
+                },
                 stores: {
                     include: {
                         store_branches: {
@@ -140,6 +185,7 @@ let StoresService = class StoresService {
             store_id: i.store_id,
             store_name: i.stores.name,
             branch_id: i.stores.store_branches[0]?.id ?? null,
+            branch_catalog_item_id: i.branch_catalog_items[0]?.id ?? null,
         }));
     }
     async getOffers(limit = 30) {
@@ -155,8 +201,12 @@ let StoresService = class StoresService {
                 },
             },
             include: {
+                branch_catalog_items: {
+                    take: 1,
+                },
                 stores: {
                     include: {
+                        business_categories: true,
                         store_branches: {
                             where: { status: 'active', accepts_orders: true },
                             take: 1,
@@ -175,9 +225,12 @@ let StoresService = class StoresService {
             description: i.description,
             base_price_amount: Number(i.base_price_amount),
             offer_price_amount: i.offer_price_amount ? Number(i.offer_price_amount) : null,
+            is_on_offer: i.is_on_offer,
             store_id: i.store_id,
             store_name: i.stores.name,
+            category_name: i.stores.business_categories?.name ?? 'Varios',
             branch_id: i.stores.store_branches[0]?.id ?? null,
+            branch_catalog_item_id: i.branch_catalog_items[0]?.id ?? null,
         }));
     }
     async getCatalogItems(storeId, branchId) {
@@ -229,6 +282,12 @@ let StoresService = class StoresService {
             offer_price_amount: ci.offer_price_amount ? Number(ci.offer_price_amount) : null,
             variant: null,
         }));
+    }
+    async getStoreProductCategories(storeId) {
+        return this.prisma.catalog_categories.findMany({
+            where: { store_id: storeId, is_active: true },
+            orderBy: { sort_order: 'asc' },
+        });
     }
 };
 exports.StoresService = StoresService;
