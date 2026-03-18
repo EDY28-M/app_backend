@@ -12,10 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
+const loyalty_service_1 = require("../loyalty/loyalty.service");
 let UsersService = class UsersService {
     prisma;
-    constructor(prisma) {
+    loyaltyService;
+    constructor(prisma, loyaltyService) {
         this.prisma = prisma;
+        this.loyaltyService = loyaltyService;
     }
     async getMe(userId) {
         const user = await this.prisma.users.findUnique({
@@ -39,8 +42,10 @@ let UsersService = class UsersService {
         });
         if (!user)
             throw new common_1.NotFoundException('Usuario no encontrado');
+        const loyalty = await this.loyaltyService.getLoyaltyOverview(userId);
         return {
             ...user,
+            loyalty,
             roles: user.user_roles.map((ur) => ({
                 code: ur.roles.code,
                 name: ur.roles.name,
@@ -113,8 +118,10 @@ let UsersService = class UsersService {
         });
         if (!user)
             throw new common_1.NotFoundException('Usuario no encontrado');
+        const loyalty = await this.loyaltyService.getLoyaltyOverview(userId);
         return {
             ...user,
+            loyalty,
             roles: user.user_roles.map((ur) => ({
                 code: ur.roles.code,
                 name: ur.roles.name,
@@ -201,10 +208,17 @@ let UsersService = class UsersService {
         await this.prisma.user_roles.delete({ where: { id: userRole.id } });
         return { message: `Rol '${roleCode}' removido correctamente` };
     }
+    async getMyLoyalty(userId) {
+        return this.loyaltyService.getLoyaltyOverview(userId);
+    }
+    async getRedeemableProducts(userId) {
+        return this.loyaltyService.getRedeemableProducts(userId);
+    }
 };
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        loyalty_service_1.LoyaltyService])
 ], UsersService);
 //# sourceMappingURL=users.service.js.map

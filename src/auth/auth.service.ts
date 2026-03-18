@@ -11,6 +11,7 @@ import * as bcrypt from 'bcrypt';
 import { OAuth2Client } from 'google-auth-library';
 import { Twilio } from 'twilio';
 import { PrismaService } from '../prisma/prisma.service';
+import { LoyaltyService } from '../loyalty/loyalty.service';
 import {
   RegisterDto,
   LoginDto,
@@ -31,6 +32,7 @@ export class AuthService {
     private prisma: PrismaService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private loyaltyService: LoyaltyService,
   ) {
     const clientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
     this.googleClient = new OAuth2Client(clientId);
@@ -93,6 +95,11 @@ export class AuthService {
       });
     }
 
+    await this.loyaltyService.createWelcomeAccount(user.id);
+    const loyalty = await this.loyaltyService.getLoyaltyOverview(user.id, {
+      consumeWelcomePopup: true,
+    });
+
     const tokens = await this.generateTokens(user.id, ['customer']);
     await this.createSession(user.id, tokens.refresh_token);
 
@@ -103,6 +110,7 @@ export class AuthService {
         last_name: user.last_name,
         email: user.email,
         phone_e164: user.phone_e164,
+        loyalty,
       },
       ...tokens,
     };
@@ -157,6 +165,9 @@ export class AuthService {
     const roles = await this.getUserRoles(user.id);
     const tokens = await this.generateTokens(user.id, roles);
     await this.createSession(user.id, tokens.refresh_token);
+    const loyalty = await this.loyaltyService.getLoyaltyOverview(user.id, {
+      consumeWelcomePopup: true,
+    });
 
     return {
       user: {
@@ -165,6 +176,7 @@ export class AuthService {
         last_name: user.last_name,
         email: user.email,
         phone_e164: user.phone_e164,
+        loyalty,
       },
       ...tokens,
     };
@@ -330,6 +342,10 @@ export class AuthService {
           },
         });
       }
+
+      await this.loyaltyService.createWelcomeAccount(user.id);
+    } else {
+      await this.loyaltyService.ensureAccount(user.id);
     }
 
     if (user.status !== 'active') {
@@ -344,6 +360,9 @@ export class AuthService {
     const roles = await this.getUserRoles(user.id);
     const tokens = await this.generateTokens(user.id, roles);
     await this.createSession(user.id, tokens.refresh_token);
+    const loyalty = await this.loyaltyService.getLoyaltyOverview(user.id, {
+      consumeWelcomePopup: true,
+    });
 
     return {
       user: {
@@ -353,6 +372,7 @@ export class AuthService {
         email: user.email,
         phone_e164: user.phone_e164,
         photo_url: user.photo_url,
+        loyalty,
       },
       is_new_user: !user.last_login_at,
       ...tokens,

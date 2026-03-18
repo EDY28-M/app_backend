@@ -38,6 +38,18 @@ export class UsersController {
     return this.usersService.updateMe(userId, dto);
   }
 
+  @Get('me/loyalty')
+  @ApiOperation({ summary: 'Obtener puntos y nivel del usuario autenticado' })
+  getMyLoyalty(@CurrentUser('id') userId: string) {
+    return this.usersService.getMyLoyalty(userId);
+  }
+
+  @Get('me/loyalty/redeemable-products')
+  @ApiOperation({ summary: 'Listar productos canjeables con puntos' })
+  getRedeemableProducts(@CurrentUser('id') userId: string) {
+    return this.usersService.getRedeemableProducts(userId);
+  }
+
   @Get()
   @UseGuards(RolesGuard)
   @Roles('admin')

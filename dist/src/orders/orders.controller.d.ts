@@ -10,6 +10,8 @@ export declare class OrdersController {
         payment_status: string;
         fulfillment_status: string;
         subtotal: number;
+        delivery_fee: number;
+        discount: number;
         total: number;
         created_at: Date;
         store_name: string;
@@ -33,6 +35,8 @@ export declare class OrdersController {
         payment_status: string;
         fulfillment_status: string;
         subtotal: number;
+        delivery_fee: number;
+        discount: number;
         total: number;
         created_at: Date;
         store_name: string;
@@ -56,6 +60,8 @@ export declare class OrdersController {
         payment_status: string;
         fulfillment_status: string;
         subtotal: number;
+        delivery_fee: number;
+        discount: number;
         total: number;
         created_at: Date;
         store_name: string;

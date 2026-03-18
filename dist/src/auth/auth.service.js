@@ -51,18 +51,21 @@ const bcrypt = __importStar(require("bcrypt"));
 const google_auth_library_1 = require("google-auth-library");
 const twilio_1 = require("twilio");
 const prisma_service_1 = require("../prisma/prisma.service");
+const loyalty_service_1 = require("../loyalty/loyalty.service");
 let AuthService = AuthService_1 = class AuthService {
     prisma;
     jwtService;
     configService;
+    loyaltyService;
     logger = new common_1.Logger(AuthService_1.name);
     googleClient;
     twilioClient;
     twilioPhone;
-    constructor(prisma, jwtService, configService) {
+    constructor(prisma, jwtService, configService, loyaltyService) {
         this.prisma = prisma;
         this.jwtService = jwtService;
         this.configService = configService;
+        this.loyaltyService = loyaltyService;
         const clientId = this.configService.get('GOOGLE_CLIENT_ID');
         this.googleClient = new google_auth_library_1.OAuth2Client(clientId);
         const accountSid = this.configService.get('TWILIO_ACCOUNT_SID');
@@ -118,6 +121,10 @@ let AuthService = AuthService_1 = class AuthService {
                 },
             });
         }
+        await this.loyaltyService.createWelcomeAccount(user.id);
+        const loyalty = await this.loyaltyService.getLoyaltyOverview(user.id, {
+            consumeWelcomePopup: true,
+        });
         const tokens = await this.generateTokens(user.id, ['customer']);
         await this.createSession(user.id, tokens.refresh_token);
         return {
@@ -127,6 +134,7 @@ let AuthService = AuthService_1 = class AuthService {
                 last_name: user.last_name,
                 email: user.email,
                 phone_e164: user.phone_e164,
+                loyalty,
             },
             ...tokens,
         };
@@ -170,6 +178,9 @@ let AuthService = AuthService_1 = class AuthService {
         const roles = await this.getUserRoles(user.id);
         const tokens = await this.generateTokens(user.id, roles);
         await this.createSession(user.id, tokens.refresh_token);
+        const loyalty = await this.loyaltyService.getLoyaltyOverview(user.id, {
+            consumeWelcomePopup: true,
+        });
         return {
             user: {
                 id: user.id,
@@ -177,6 +188,7 @@ let AuthService = AuthService_1 = class AuthService {
                 last_name: user.last_name,
                 email: user.email,
                 phone_e164: user.phone_e164,
+                loyalty,
             },
             ...tokens,
         };
@@ -306,6 +318,10 @@ let AuthService = AuthService_1 = class AuthService {
                     },
                 });
             }
+            await this.loyaltyService.createWelcomeAccount(user.id);
+        }
+        else {
+            await this.loyaltyService.ensureAccount(user.id);
         }
         if (user.status !== 'active') {
             throw new common_1.UnauthorizedException('Cuenta suspendida o eliminada');
@@ -317,6 +333,9 @@ let AuthService = AuthService_1 = class AuthService {
         const roles = await this.getUserRoles(user.id);
         const tokens = await this.generateTokens(user.id, roles);
         await this.createSession(user.id, tokens.refresh_token);
+        const loyalty = await this.loyaltyService.getLoyaltyOverview(user.id, {
+            consumeWelcomePopup: true,
+        });
         return {
             user: {
                 id: user.id,
@@ -325,6 +344,7 @@ let AuthService = AuthService_1 = class AuthService {
                 email: user.email,
                 phone_e164: user.phone_e164,
                 photo_url: user.photo_url,
+                loyalty,
             },
             is_new_user: !user.last_login_at,
             ...tokens,
@@ -434,6 +454,7 @@ exports.AuthService = AuthService = AuthService_1 = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
         jwt_1.JwtService,
-        config_1.ConfigService])
+        config_1.ConfigService,
+        loyalty_service_1.LoyaltyService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

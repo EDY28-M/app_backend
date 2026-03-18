@@ -3,11 +3,13 @@ export declare class StoresController {
     private readonly storesService;
     constructor(storesService: StoresService);
     getCategories(): Promise<{
-        code: string;
         id: string;
-        created_at: Date;
+        code: string;
         name: string;
         is_active: boolean;
+        logo_url: string | null;
+        bg_color: string | null;
+        created_at: Date;
     }[]>;
     findPopular(category?: string): Promise<{
         id: string;
@@ -17,8 +19,8 @@ export declare class StoresController {
         logo_url: string | null;
         cover_image_url: string | null;
         category: {
-            code: string;
             name: string;
+            code: string;
         };
         avg_rating: number | null;
         total_reviews: number;
@@ -37,6 +39,7 @@ export declare class StoresController {
         is_on_offer: boolean;
         store_id: string;
         store_name: string;
+        business_category_name: string;
         branch_id: string;
         branch_catalog_item_id: string;
     }[]>;
@@ -54,6 +57,21 @@ export declare class StoresController {
         branch_id: string;
         branch_catalog_item_id: string;
     }[]>;
+    searchProducts(q?: string, limit?: string): Promise<{
+        id: string;
+        name: string;
+        image_url: string | null;
+        description: string | null;
+        price: number;
+        is_on_offer: boolean;
+        offer_price_amount: number | null;
+        store_id: string;
+        store_name: string;
+        branch_id: string;
+        branch_catalog_item_id: string;
+        catalog_category_name: string | null;
+        business_category_name: string | null;
+    }[]>;
     getCatalog(storeId: string, branchId: string): Promise<{
         id: string;
         branch_catalog_item_id: string;
@@ -61,6 +79,8 @@ export declare class StoresController {
         image_url: string | null;
         description: string | null;
         item_type: import("@prisma/client").$Enums.item_type_enum;
+        category_name: string;
+        category_sort_order: number;
         price: number;
         is_on_offer: boolean;
         offer_price_amount: number | null;
@@ -75,6 +95,8 @@ export declare class StoresController {
         image_url: string | null;
         description: string | null;
         item_type: import("@prisma/client").$Enums.item_type_enum;
+        category_name: string;
+        category_sort_order: number;
         price: number;
         is_on_offer: boolean;
         offer_price_amount: number | null;
@@ -97,15 +119,15 @@ export declare class StoresController {
         avg_rating: number | null;
         min_order_amount: number | null;
         business_categories: {
-            code: string;
             name: string;
+            code: string;
         };
         store_branches: ({
             addresses: {
                 id: string;
+                user_id: string | null;
                 created_at: Date;
                 updated_at: Date;
-                user_id: string | null;
                 label: string | null;
                 contact_name: string | null;
                 contact_phone: string | null;
@@ -122,41 +144,41 @@ export declare class StoresController {
                 is_default: boolean;
             };
         } & {
-            phone_e164: string | null;
             id: string;
-            status: import("@prisma/client").$Enums.branch_status_type;
             created_at: Date;
             updated_at: Date;
             name: string;
             store_id: string;
+            status: import("@prisma/client").$Enums.branch_status_type;
+            phone_e164: string | null;
             address_id: string;
             manager_user_id: string | null;
             accepts_orders: boolean;
             avg_prep_time_minutes: number;
             max_concurrent_orders: number | null;
         })[];
-        description: string | null;
         id: string;
-        status: import("@prisma/client").$Enums.store_status_type;
         created_at: Date;
         updated_at: Date;
         name: string;
+        slug: string;
+        description: string | null;
         merchant_id: string;
         business_category_id: string;
-        slug: string;
         logo_url: string | null;
         cover_image_url: string | null;
         service_mode: import("@prisma/client").$Enums.service_mode_type;
         catalog_mode: import("@prisma/client").$Enums.catalog_mode_type;
+        status: import("@prisma/client").$Enums.store_status_type;
         total_reviews: number;
     }>;
     getStoreProductCategories(id: string): Promise<{
         id: string;
         created_at: Date;
         name: string;
+        store_id: string;
         slug: string;
         is_active: boolean;
-        store_id: string;
         sort_order: number;
         parent_id: string | null;
     }[]>;

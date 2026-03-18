@@ -5,9 +5,9 @@ export declare class AddressesService {
     constructor(prisma: PrismaService);
     create(userId: string, dto: CreateAddressDto): Promise<{
         id: string;
+        user_id: string | null;
         created_at: Date;
         updated_at: Date;
-        user_id: string | null;
         label: string | null;
         contact_name: string | null;
         contact_phone: string | null;
@@ -25,9 +25,9 @@ export declare class AddressesService {
     }>;
     findAllByUser(userId: string): Promise<{
         id: string;
+        user_id: string | null;
         created_at: Date;
         updated_at: Date;
-        user_id: string | null;
         label: string | null;
         contact_name: string | null;
         contact_phone: string | null;
@@ -45,9 +45,9 @@ export declare class AddressesService {
     }[]>;
     update(userId: string, addressId: string, dto: UpdateAddressDto): Promise<{
         id: string;
+        user_id: string | null;
         created_at: Date;
         updated_at: Date;
-        user_id: string | null;
         label: string | null;
         contact_name: string | null;
         contact_phone: string | null;
@@ -68,9 +68,9 @@ export declare class AddressesService {
     }>;
     setDefault(userId: string, addressId: string): Promise<{
         id: string;
+        user_id: string | null;
         created_at: Date;
         updated_at: Date;
-        user_id: string | null;
         label: string | null;
         contact_name: string | null;
         contact_phone: string | null;

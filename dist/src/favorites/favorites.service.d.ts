@@ -16,8 +16,8 @@ export declare class FavoritesService {
         };
     } & {
         id: string;
-        created_at: Date;
         user_id: string;
+        created_at: Date;
         store_id: string;
     }>;
     remove(userId: string, storeId: string): Promise<{
@@ -28,8 +28,8 @@ export declare class FavoritesService {
         name: string;
         slug: string;
         category: {
-            code: string;
             name: string;
+            code: string;
         };
         avg_rating: number | null;
         branch_id: string;

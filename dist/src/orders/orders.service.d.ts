@@ -1,8 +1,11 @@
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateOrderDto } from './dto';
+import { LoyaltyService } from '../loyalty/loyalty.service';
 export declare class OrdersService {
     private prisma;
-    constructor(prisma: PrismaService);
+    private loyaltyService;
+    private readonly logger;
+    constructor(prisma: PrismaService, loyaltyService: LoyaltyService);
     private _toEffectivePrice;
     create(userId: string, dto: CreateOrderDto): Promise<{
         id: string;
@@ -11,6 +14,8 @@ export declare class OrdersService {
         payment_status: string;
         fulfillment_status: string;
         subtotal: number;
+        delivery_fee: number;
+        discount: number;
         total: number;
         created_at: Date;
         store_name: string;
@@ -34,6 +39,8 @@ export declare class OrdersService {
         payment_status: string;
         fulfillment_status: string;
         subtotal: number;
+        delivery_fee: number;
+        discount: number;
         total: number;
         created_at: Date;
         store_name: string;
@@ -57,6 +64,8 @@ export declare class OrdersService {
         payment_status: string;
         fulfillment_status: string;
         subtotal: number;
+        delivery_fee: number;
+        discount: number;
         total: number;
         created_at: Date;
         store_name: string;

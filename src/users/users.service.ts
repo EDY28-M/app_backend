@@ -6,10 +6,14 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateUserDto, AssignRoleDto } from './dto';
 import { PaginationDto } from '../common/dto';
+import { LoyaltyService } from '../loyalty/loyalty.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private loyaltyService: LoyaltyService,
+  ) {}
 
   async getMe(userId: string) {
     const user = await this.prisma.users.findUnique({
@@ -34,8 +38,11 @@ export class UsersService {
 
     if (!user) throw new NotFoundException('Usuario no encontrado');
 
+    const loyalty = await this.loyaltyService.getLoyaltyOverview(userId);
+
     return {
       ...user,
+      loyalty,
       roles: user.user_roles.map((ur) => ({
         code: ur.roles.code,
         name: ur.roles.name,
@@ -112,8 +119,11 @@ export class UsersService {
 
     if (!user) throw new NotFoundException('Usuario no encontrado');
 
+    const loyalty = await this.loyaltyService.getLoyaltyOverview(userId);
+
     return {
       ...user,
+      loyalty,
       roles: user.user_roles.map((ur) => ({
         code: ur.roles.code,
         name: ur.roles.name,
@@ -207,5 +217,13 @@ export class UsersService {
     await this.prisma.user_roles.delete({ where: { id: userRole.id } });
 
     return { message: `Rol '${roleCode}' removido correctamente` };
+  }
+
+  async getMyLoyalty(userId: string) {
+    return this.loyaltyService.getLoyaltyOverview(userId);
+  }
+
+  async getRedeemableProducts(userId: string) {
+    return this.loyaltyService.getRedeemableProducts(userId);
   }
 }

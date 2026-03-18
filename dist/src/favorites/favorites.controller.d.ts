@@ -7,8 +7,8 @@ export declare class FavoritesController {
         name: string;
         slug: string;
         category: {
-            code: string;
             name: string;
+            code: string;
         };
         avg_rating: number | null;
         branch_id: string;
@@ -29,8 +29,8 @@ export declare class FavoritesController {
         };
     } & {
         id: string;
-        created_at: Date;
         user_id: string;
+        created_at: Date;
         store_id: string;
     }>;
     remove(userId: string, storeId: string): Promise<{

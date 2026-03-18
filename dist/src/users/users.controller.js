@@ -31,6 +31,12 @@ let UsersController = class UsersController {
     updateMe(userId, dto) {
         return this.usersService.updateMe(userId, dto);
     }
+    getMyLoyalty(userId) {
+        return this.usersService.getMyLoyalty(userId);
+    }
+    getRedeemableProducts(userId) {
+        return this.usersService.getRedeemableProducts(userId);
+    }
     findAll(pagination) {
         return this.usersService.findAll(pagination);
     }
@@ -62,6 +68,22 @@ __decorate([
     __metadata("design:paramtypes", [String, dto_1.UpdateUserDto]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "updateMe", null);
+__decorate([
+    (0, common_1.Get)('me/loyalty'),
+    (0, swagger_1.ApiOperation)({ summary: 'Obtener puntos y nivel del usuario autenticado' }),
+    __param(0, (0, decorators_1.CurrentUser)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "getMyLoyalty", null);
+__decorate([
+    (0, common_1.Get)('me/loyalty/redeemable-products'),
+    (0, swagger_1.ApiOperation)({ summary: 'Listar productos canjeables con puntos' }),
+    __param(0, (0, decorators_1.CurrentUser)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "getRedeemableProducts", null);
 __decorate([
     (0, common_1.Get)(),
     (0, common_1.UseGuards)(guards_1.RolesGuard),

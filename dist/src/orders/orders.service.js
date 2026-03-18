@@ -8,14 +8,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var OrdersService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrdersService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
-let OrdersService = class OrdersService {
+const loyalty_service_1 = require("../loyalty/loyalty.service");
+let OrdersService = OrdersService_1 = class OrdersService {
     prisma;
-    constructor(prisma) {
+    loyaltyService;
+    logger = new common_1.Logger(OrdersService_1.name);
+    constructor(prisma, loyaltyService) {
         this.prisma = prisma;
+        this.loyaltyService = loyaltyService;
     }
     _toEffectivePrice(input) {
         const base = Number(input.basePrice);
@@ -28,6 +33,21 @@ let OrdersService = class OrdersService {
         return base;
     }
     async create(userId, dto) {
+        const addressCount = await this.prisma.addresses.count({
+            where: { user_id: userId },
+        });
+        if (addressCount === 0) {
+            throw new common_1.BadRequestException({
+                code: 'ADDRESS_REQUIRED',
+                message: 'Debes agregar una direccion antes de pagar.',
+            });
+        }
+        if (!dto.delivery_address_id) {
+            throw new common_1.BadRequestException({
+                code: 'ADDRESS_REQUIRED',
+                message: 'Selecciona una direccion de entrega para continuar.',
+            });
+        }
         const cart = await this.prisma.carts.findFirst({
             where: {
                 id: dto.cart_id,
@@ -50,16 +70,25 @@ let OrdersService = class OrdersService {
         const address = await this.prisma.addresses.findFirst({
             where: { id: dto.delivery_address_id, user_id: userId },
         });
-        if (!address)
-            throw new common_1.BadRequestException('Dirección no válida');
+        if (!address) {
+            throw new common_1.BadRequestException({
+                code: 'ADDRESS_REQUIRED',
+                message: 'La direccion seleccionada no es valida para este usuario.',
+            });
+        }
         const user = await this.prisma.users.findUnique({
             where: { id: userId },
             select: { first_name: true, last_name: true, phone_e164: true, email: true },
         });
         if (!user)
             throw new common_1.NotFoundException('Usuario no encontrado');
-        const customerName = [user.first_name, user.last_name].filter(Boolean).join(' ');
-        const customerPhone = user.phone_e164 ?? user.email ?? '';
+        const customerName = [user.first_name, user.last_name]
+            .filter(Boolean)
+            .join(' ')
+            .trim();
+        const customerPhone = (user.phone_e164 ?? user.email ?? '')
+            .trim()
+            .slice(0, 20);
         const orderCode = `FG-${Date.now().toString(36).toUpperCase()}`;
         const repricedItems = cart.cart_items.map((ci) => {
             const effective = this._toEffectivePrice({
@@ -87,6 +116,34 @@ let OrdersService = class OrdersService {
         const subtotal = repricedItems.reduce((s, ci) => {
             return s + ci.effective_unit_price * ci.qty;
         }, 0);
+        let loyaltyPreview = {
+            redeem_points: 0,
+            redeem_soles: 0,
+            earn_points: 0,
+            loyalty: {
+                level: 'bronce',
+                is_new_user_shipping_active: false,
+            },
+        };
+        let deliveryFee = 0;
+        try {
+            const preview = await this.loyaltyService.previewOrderLoyalty(userId, subtotal, dto.points_to_redeem ?? 0);
+            loyaltyPreview = {
+                ...preview,
+                loyalty: {
+                    level: preview.loyalty.level,
+                    is_new_user_shipping_active: preview.loyalty.is_new_user_shipping_active,
+                },
+            };
+            deliveryFee = this.loyaltyService.resolveDeliveryFee(subtotal, {
+                level: loyaltyPreview.loyalty.level,
+                is_new_user_shipping_active: loyaltyPreview.loyalty.is_new_user_shipping_active,
+            });
+        }
+        catch (error) {
+            this.logger.error(`Loyalty preview failed for user ${userId}, continuing without loyalty`, error instanceof Error ? error.stack : undefined);
+        }
+        const totalAmount = Math.max(0, subtotal + deliveryFee - loyaltyPreview.redeem_soles);
         const [order] = await this.prisma.$transaction([
             this.prisma.orders.create({
                 data: {
@@ -103,11 +160,11 @@ let OrdersService = class OrdersService {
                     fulfillment_status: 'pending',
                     subtotal_amount: subtotal,
                     modifier_total_amount: 0,
-                    discount_amount: 0,
-                    delivery_fee_amount: 0,
+                    discount_amount: loyaltyPreview.redeem_soles,
+                    delivery_fee_amount: deliveryFee,
                     service_fee_amount: 0,
                     tip_amount: 0,
-                    total_amount: subtotal,
+                    total_amount: totalAmount,
                     notes: dto.notes,
                     customer_name_snapshot: customerName,
                     customer_phone_snapshot: customerPhone,
@@ -157,6 +214,12 @@ let OrdersService = class OrdersService {
                 status: 'pending_assignment',
             },
         });
+        try {
+            await this.loyaltyService.applyOrderLoyalty(userId, order.id, loyaltyPreview.redeem_points, loyaltyPreview.redeem_soles, loyaltyPreview.earn_points);
+        }
+        catch (error) {
+            this.logger.error(`Loyalty apply failed for order ${order.id}`, error instanceof Error ? error.stack : undefined);
+        }
         return this.findOne(userId, order.id);
     }
     async findMyOrders(userId, tab = 'active') {
@@ -227,6 +290,8 @@ let OrdersService = class OrdersService {
             payment_status: order.payment_status,
             fulfillment_status: order.fulfillment_status,
             subtotal: Number(order.subtotal_amount),
+            delivery_fee: Number(order.delivery_fee_amount),
+            discount: Number(order.discount_amount),
             total: Number(order.total_amount),
             created_at: order.created_at,
             store_name: order.stores.name,
@@ -248,8 +313,9 @@ let OrdersService = class OrdersService {
     }
 };
 exports.OrdersService = OrdersService;
-exports.OrdersService = OrdersService = __decorate([
+exports.OrdersService = OrdersService = OrdersService_1 = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        loyalty_service_1.LoyaltyService])
 ], OrdersService);
 //# sourceMappingURL=orders.service.js.map

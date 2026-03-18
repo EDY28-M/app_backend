@@ -1,5 +1,6 @@
 import { IsUUID, IsOptional, IsString } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsInt, Min } from 'class-validator';
 
 export class CreateOrderDto {
   @ApiProperty()
@@ -14,4 +15,10 @@ export class CreateOrderDto {
   @IsOptional()
   @IsString()
   notes?: string;
+
+  @ApiPropertyOptional({ description: 'Puntos a canjear (100 puntos = S/ 1)' })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  points_to_redeem?: number;
 }

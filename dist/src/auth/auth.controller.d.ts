@@ -12,6 +12,28 @@ export declare class AuthController {
             last_name: string | null;
             email: string | null;
             phone_e164: string | null;
+            loyalty: {
+                points_balance: number;
+                lifetime_points: number;
+                level: "bronce" | "oro" | "platino";
+                level_label: string;
+                level_description: string;
+                points_value_soles: number;
+                points_per_10_soles: number;
+                conversion_rate: {
+                    points_per_1_sol: number;
+                    points_per_10_soles: number;
+                };
+                next_level: ("bronce" | "oro" | "platino") | null;
+                points_to_next_level: number;
+                is_new_user_shipping_active: boolean;
+                new_user_shipping_days_remaining: number;
+                new_user_shipping_free_until: Date | null;
+                welcome_popup: {
+                    show: boolean;
+                    message: string;
+                };
+            };
         };
     }>;
     login(dto: LoginDto): Promise<{
@@ -23,6 +45,28 @@ export declare class AuthController {
             last_name: any;
             email: any;
             phone_e164: any;
+            loyalty: {
+                points_balance: number;
+                lifetime_points: number;
+                level: "bronce" | "oro" | "platino";
+                level_label: string;
+                level_description: string;
+                points_value_soles: number;
+                points_per_10_soles: number;
+                conversion_rate: {
+                    points_per_1_sol: number;
+                    points_per_10_soles: number;
+                };
+                next_level: ("bronce" | "oro" | "platino") | null;
+                points_to_next_level: number;
+                is_new_user_shipping_active: boolean;
+                new_user_shipping_days_remaining: number;
+                new_user_shipping_free_until: Date | null;
+                welcome_popup: {
+                    show: boolean;
+                    message: string;
+                };
+            };
         };
     }>;
     sendOtp(dto: SendOtpDto): Promise<{
@@ -44,6 +88,28 @@ export declare class AuthController {
             email: string | null;
             phone_e164: string | null;
             photo_url: string | null;
+            loyalty: {
+                points_balance: number;
+                lifetime_points: number;
+                level: "bronce" | "oro" | "platino";
+                level_label: string;
+                level_description: string;
+                points_value_soles: number;
+                points_per_10_soles: number;
+                conversion_rate: {
+                    points_per_1_sol: number;
+                    points_per_10_soles: number;
+                };
+                next_level: ("bronce" | "oro" | "platino") | null;
+                points_to_next_level: number;
+                is_new_user_shipping_active: boolean;
+                new_user_shipping_days_remaining: number;
+                new_user_shipping_free_until: Date | null;
+                welcome_popup: {
+                    show: boolean;
+                    message: string;
+                };
+            };
         };
         is_new_user: boolean;
     }>;

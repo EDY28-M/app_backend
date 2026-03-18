@@ -37,6 +37,13 @@ export class StoresController {
   }
 
   @Public()
+  @Get('search')
+  @ApiOperation({ summary: 'Buscar productos globalmente por texto' })
+  searchProducts(@Query('q') q?: string, @Query('limit') limit?: string) {
+    return this.storesService.searchProducts(q ?? '', limit ? parseInt(limit, 10) : 40);
+  }
+
+  @Public()
   @Get('catalog')
   @ApiOperation({ summary: 'Obtener catálogo de sucursal' })
   getCatalog(

@@ -12,10 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateOrderDto = void 0;
 const class_validator_1 = require("class-validator");
 const swagger_1 = require("@nestjs/swagger");
+const class_validator_2 = require("class-validator");
 class CreateOrderDto {
     cart_id;
     delivery_address_id;
     notes;
+    points_to_redeem;
 }
 exports.CreateOrderDto = CreateOrderDto;
 __decorate([
@@ -34,4 +36,11 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateOrderDto.prototype, "notes", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ description: 'Puntos a canjear (100 puntos = S/ 1)' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_2.IsInt)(),
+    (0, class_validator_2.Min)(0),
+    __metadata("design:type", Number)
+], CreateOrderDto.prototype, "points_to_redeem", void 0);
 //# sourceMappingURL=create-order.dto.js.map

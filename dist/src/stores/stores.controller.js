@@ -34,6 +34,9 @@ let StoresController = class StoresController {
     getOffers(limit) {
         return this.storesService.getOffers(limit ? parseInt(limit, 10) : 30);
     }
+    searchProducts(q, limit) {
+        return this.storesService.searchProducts(q ?? '', limit ? parseInt(limit, 10) : 40);
+    }
     getCatalog(storeId, branchId) {
         return this.storesService.getCatalogItems(storeId, branchId);
     }
@@ -84,6 +87,16 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], StoresController.prototype, "getOffers", null);
+__decorate([
+    (0, decorators_1.Public)(),
+    (0, common_1.Get)('search'),
+    (0, swagger_1.ApiOperation)({ summary: 'Buscar productos globalmente por texto' }),
+    __param(0, (0, common_1.Query)('q')),
+    __param(1, (0, common_1.Query)('limit')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], StoresController.prototype, "searchProducts", null);
 __decorate([
     (0, decorators_1.Public)(),
     (0, common_1.Get)('catalog'),

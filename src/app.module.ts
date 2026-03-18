@@ -9,6 +9,7 @@ import { StoresModule } from './stores/stores.module';
 import { CartsModule } from './carts/carts.module';
 import { OrdersModule } from './orders/orders.module';
 import { FavoritesModule } from './favorites/favorites.module';
+import { LoyaltyModule } from './loyalty/loyalty.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 
 @Module({
@@ -22,6 +23,7 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
     CartsModule,
     OrdersModule,
     FavoritesModule,
+    LoyaltyModule,
   ],
   providers: [
     {

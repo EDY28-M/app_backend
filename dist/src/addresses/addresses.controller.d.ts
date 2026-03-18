@@ -5,9 +5,9 @@ export declare class AddressesController {
     constructor(addressesService: AddressesService);
     create(userId: string, dto: CreateAddressDto): Promise<{
         id: string;
+        user_id: string | null;
         created_at: Date;
         updated_at: Date;
-        user_id: string | null;
         label: string | null;
         contact_name: string | null;
         contact_phone: string | null;
@@ -25,9 +25,9 @@ export declare class AddressesController {
     }>;
     findAll(userId: string): Promise<{
         id: string;
+        user_id: string | null;
         created_at: Date;
         updated_at: Date;
-        user_id: string | null;
         label: string | null;
         contact_name: string | null;
         contact_phone: string | null;
@@ -45,9 +45,9 @@ export declare class AddressesController {
     }[]>;
     update(userId: string, id: string, dto: UpdateAddressDto): Promise<{
         id: string;
+        user_id: string | null;
         created_at: Date;
         updated_at: Date;
-        user_id: string | null;
         label: string | null;
         contact_name: string | null;
         contact_phone: string | null;
@@ -68,9 +68,9 @@ export declare class AddressesController {
     }>;
     setDefault(userId: string, id: string): Promise<{
         id: string;
+        user_id: string | null;
         created_at: Date;
         updated_at: Date;
-        user_id: string | null;
         label: string | null;
         contact_name: string | null;
         contact_phone: string | null;
